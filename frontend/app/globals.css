@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* ============================================================
+   ColorFit Design Tokens — DESIGN.md 기반
+   ============================================================ */
+
+:root {
+  /* ── 배경 & 서피스 ── */
+  --bg:             #F8F6F3; /* Warm Off-White */
+  --bg-secondary:   #F0EDE8; /* Warm Beige Card */
+  --surface:        #F0EDE8;
+  --warm-neutral:   #F5DEB3; /* Wheat */
+
+  /* ── 텍스트 ── */
+  --text-primary:   #222222; /* Charcoal Black */
+  --text-secondary: #8C8578; /* Warm Gray */
+  --text-tertiary:  #B5AFA6; /* Sand */
+
+  /* ── 액센트 ── */
+  --accent:         #964F4C; /* Marsala */
+  --accent-sub:     #D4A5A5; /* Soft Pink */
+
+  /* ── 테두리 ── */
+  --border:         #E5E1DA; /* Wheat Beige */
+
+  /* ── 스코어 축 컬러 5개 ── */
+  --score-pcf:      #964F4C; /* Marsala      — 퍼스널컬러 적합도 */
+  --score-of:       #4F97A3; /* Ocean Blue   — TPO 적합도 */
+  --score-ch:       #DDB67D; /* Honey Gold   — 색상 조화 */
+  --score-pe:       #D1933F; /* Autumn Blaze — 가격 효율 */
+  --score-sf:       #6B5876; /* Grape Compote — 스타일 핏 */
+  --score-track:    #E5E1DA; /* 스코어 바 미충전 트랙 */
+
+  /* ── 시맨틱 컬러 (웜 톤) ── */
+  --success-bg:     #F0EDE8;
+  --success-text:   #6B7F5E;
+  --success-border: #D4DCCC;
+
+  --warning-bg:     #F5F0E8;
+  --warning-text:   #A07830;
+  --warning-border: #E5D9C0;
+
+  --error-bg:       #F5EDEC;
+  --error-text:     #964F4C;
+  --error-border:   #E0CBC9;
+
+  --info-bg:        #EDF3F4;
+  --info-text:      #4F97A3;
+  --info-border:    #C8DDE0;
+
+  /* ── 스페이싱 스케일 (8px 베이스) ── */
+  --space-2xs:  2px;
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:   16px;
+  --space-lg:   24px;
+  --space-xl:   32px;
+  --space-2xl:  48px;
+  --space-3xl:  64px;
+
+  /* ── 폰트 패밀리 ── */
+  --font-display: var(--font-nanum-myeongjo), "Nanum Myeongjo", serif;
+  --font-body:    "Pretendard Variable", Pretendard, sans-serif;
+
+  /* ── 보더 래디우스 ── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+}
+
+/* ── 다크모드 토큰 ── */
+[data-theme="dark"] {
+  --bg:           #1A1714;
+  --bg-secondary: #242018;
+  --surface:      #242018;
+
+  --text-primary:   #F0EDE8;
+  --text-secondary: #8C8578;
+  --text-tertiary:  #B5AFA6;
+
+  --accent:     #C4726F;
+  --accent-sub: #D4A5A5;
+
+  --score-pcf: #C4726F;
+  --score-of:  #6BADB9;
+  --score-ch:  #E8C693;
+  --score-pe:  #DBA84F;
+  --score-sf:  #896E96;
+}
+
+/* ============================================================
+   Tailwind 4 테마 연동
+   ============================================================ */
+@theme inline {
+  --color-bg:           var(--bg);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-surface:      var(--surface);
+  --color-accent:       var(--accent);
+  --color-accent-sub:   var(--accent-sub);
+  --color-border:       var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary:  var(--text-tertiary);
+
+  --color-score-pcf:   var(--score-pcf);
+  --color-score-of:    var(--score-of);
+  --color-score-ch:    var(--score-ch);
+  --color-score-pe:    var(--score-pe);
+  --color-score-sf:    var(--score-sf);
+  --color-score-track: var(--score-track);
+
+  --spacing-2xs: var(--space-2xs);
+  --spacing-xs:  var(--space-xs);
+  --spacing-sm:  var(--space-sm);
+  --spacing-md:  var(--space-md);
+  --spacing-lg:  var(--space-lg);
+  --spacing-xl:  var(--space-xl);
+  --spacing-2xl: var(--space-2xl);
+  --spacing-3xl: var(--space-3xl);
+
+  --radius-sm:   var(--radius-sm);
+  --radius-md:   var(--radius-md);
+  --radius-lg:   var(--radius-lg);
+  --radius-xl:   var(--radius-xl);
+  --radius-full: var(--radius-full);
+}
+
+/* ============================================================
+   베이스 스타일
+   ============================================================ */
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}

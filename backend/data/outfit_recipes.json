@@ -1,0 +1,262 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "TPO x 무드 코디 레시피 매트릭스 (기획서 섹션 5.3.1)",
+    "structure": {
+      "required": "[[A, B], [C, D]] = (A OR B) AND (C OR D) — 각 그룹에서 1개 반드시 포함",
+      "optional": "[A, B, C] = 확률적으로 추가 (최대 2개)",
+      "forbidden": "[A, B] = 코디에 절대 포함 금지",
+      "formality_range": "[min, max] — 포멀도 1(스포츠)~5(포멀)",
+      "silhouette_hints": "권장 실루엣 (oversized/slim/fitted/wide/regular)"
+    },
+    "tpo_list": ["interview", "commute", "date", "weekend", "campus", "travel", "event", "workout"],
+    "category_ids": "classify_categories.py의 31개 카테고리 ID 사용",
+    "total_recipes": 16
+  },
+
+  "female": [
+    {
+      "recipe_id": "female_interview",
+      "gender": "female",
+      "tpo": "interview",
+      "moods": ["classic", "minimal"],
+      "required": [
+        ["shirt", "blouse"],
+        ["slacks", "skirt"]
+      ],
+      "optional": ["jacket", "loafer", "heels", "tote_bag"],
+      "forbidden": ["hoodie", "tshirt", "sneakers", "crop_top", "leggings", "padding"],
+      "formality_range": [3, 5],
+      "silhouette_hints": ["slim", "fitted", "regular"],
+      "price_hint": "50000~300000"
+    },
+    {
+      "recipe_id": "female_commute",
+      "gender": "female",
+      "tpo": "commute",
+      "moods": ["classic", "minimal"],
+      "required": [
+        ["shirt", "blouse", "knit"],
+        ["slacks"]
+      ],
+      "optional": ["jacket", "trench_coat", "loafer", "tote_bag", "cardigan"],
+      "forbidden": ["leggings", "sneakers", "padding", "crop_top", "hoodie"],
+      "formality_range": [3, 4],
+      "silhouette_hints": ["slim", "regular", "fitted"],
+      "price_hint": "30000~200000"
+    },
+    {
+      "recipe_id": "female_date",
+      "gender": "female",
+      "tpo": "date",
+      "moods": ["lovely", "casual", "editorial"],
+      "required": [
+        ["knit", "blouse", "onepiece"],
+        ["skirt", "slacks", "mini_skirt"]
+      ],
+      "optional": ["cardigan", "heels", "cross_bag", "flats", "loafer"],
+      "forbidden": ["padding", "hoodie", "sneakers"],
+      "formality_range": [2, 4],
+      "silhouette_hints": ["fitted", "regular", "wide"],
+      "price_hint": "30000~200000"
+    },
+    {
+      "recipe_id": "female_weekend",
+      "gender": "female",
+      "tpo": "weekend",
+      "moods": ["casual", "street"],
+      "required": [
+        ["tshirt", "knit", "hoodie"],
+        ["jeans", "slacks"]
+      ],
+      "optional": ["cardigan", "sneakers", "cross_bag", "jumper"],
+      "forbidden": ["jacket", "heels", "clutch"],
+      "formality_range": [1, 3],
+      "silhouette_hints": ["oversized", "regular", "wide"],
+      "price_hint": "20000~120000"
+    },
+    {
+      "recipe_id": "female_campus",
+      "gender": "female",
+      "tpo": "campus",
+      "moods": ["casual", "street"],
+      "required": [
+        ["tshirt", "hoodie", "knit"],
+        ["jeans", "slacks"]
+      ],
+      "optional": ["sneakers", "shoulder_bag", "cardigan"],
+      "forbidden": ["coat", "heels", "clutch", "jacket"],
+      "formality_range": [1, 2],
+      "silhouette_hints": ["oversized", "regular"],
+      "price_hint": "15000~100000"
+    },
+    {
+      "recipe_id": "female_travel",
+      "gender": "female",
+      "tpo": "travel",
+      "moods": ["casual"],
+      "required": [
+        ["tshirt", "knit", "blouse"],
+        ["slacks", "jeans"]
+      ],
+      "optional": ["jumper", "sneakers", "cross_bag", "shoulder_bag"],
+      "forbidden": ["heels", "jacket", "clutch"],
+      "formality_range": [1, 3],
+      "silhouette_hints": ["regular", "wide", "oversized"],
+      "price_hint": "20000~150000"
+    },
+    {
+      "recipe_id": "female_event",
+      "gender": "female",
+      "tpo": "event",
+      "moods": ["classic", "editorial"],
+      "required": [
+        ["blouse", "onepiece"],
+        ["skirt", "slacks"]
+      ],
+      "optional": ["coat", "heels", "clutch", "jacket"],
+      "forbidden": ["hoodie", "sneakers", "shoulder_bag", "tshirt"],
+      "formality_range": [4, 5],
+      "silhouette_hints": ["fitted", "slim", "regular"],
+      "price_hint": "50000~400000"
+    },
+    {
+      "recipe_id": "female_workout",
+      "gender": "female",
+      "tpo": "workout",
+      "moods": ["street"],
+      "required": [
+        ["tshirt", "crop_top"],
+        ["leggings", "slacks", "jeans"]
+      ],
+      "optional": ["sneakers", "cross_bag"],
+      "forbidden": ["blouse", "heels", "coat", "jacket", "skirt", "slacks"],
+      "formality_range": [1, 1],
+      "silhouette_hints": ["slim", "fitted"],
+      "price_hint": "15000~100000"
+    }
+  ],
+
+  "male": [
+    {
+      "recipe_id": "male_interview",
+      "gender": "male",
+      "tpo": "interview",
+      "moods": ["classic", "dandy"],
+      "required": [
+        ["shirt"],
+        ["slacks"]
+      ],
+      "optional": ["jacket", "loafer", "tote_bag"],
+      "forbidden": ["hoodie", "tshirt", "sneakers", "jeans", "padding"],
+      "formality_range": [4, 5],
+      "silhouette_hints": ["slim", "regular", "fitted"],
+      "price_hint": "50000~300000"
+    },
+    {
+      "recipe_id": "male_commute",
+      "gender": "male",
+      "tpo": "commute",
+      "moods": ["classic", "minimal"],
+      "required": [
+        ["shirt", "knit"],
+        ["slacks"]
+      ],
+      "optional": ["jacket", "loafer", "tote_bag", "cardigan"],
+      "forbidden": ["hoodie", "sneakers", "leggings"],
+      "formality_range": [3, 4],
+      "silhouette_hints": ["slim", "regular"],
+      "price_hint": "30000~200000"
+    },
+    {
+      "recipe_id": "male_date",
+      "gender": "male",
+      "tpo": "date",
+      "moods": ["dandy", "minimal", "casual"],
+      "required": [
+        ["knit", "shirt"],
+        ["slacks", "jeans"]
+      ],
+      "optional": ["jacket", "loafer", "cross_bag"],
+      "forbidden": ["hoodie", "leggings"],
+      "formality_range": [2, 4],
+      "silhouette_hints": ["slim", "regular", "fitted"],
+      "price_hint": "30000~200000"
+    },
+    {
+      "recipe_id": "male_weekend",
+      "gender": "male",
+      "tpo": "weekend",
+      "moods": ["casual", "amekaji"],
+      "required": [
+        ["tshirt", "hoodie", "knit"],
+        ["jeans", "slacks"]
+      ],
+      "optional": ["cardigan", "sneakers", "cross_bag", "jumper"],
+      "forbidden": ["jacket", "loafer"],
+      "formality_range": [1, 3],
+      "silhouette_hints": ["oversized", "regular", "wide"],
+      "price_hint": "20000~120000"
+    },
+    {
+      "recipe_id": "male_campus",
+      "gender": "male",
+      "tpo": "campus",
+      "moods": ["casual", "street"],
+      "required": [
+        ["hoodie", "tshirt", "knit"],
+        ["jeans", "slacks"]
+      ],
+      "optional": ["sneakers", "shoulder_bag"],
+      "forbidden": ["jacket", "loafer"],
+      "formality_range": [1, 2],
+      "silhouette_hints": ["oversized", "regular"],
+      "price_hint": "15000~100000"
+    },
+    {
+      "recipe_id": "male_travel",
+      "gender": "male",
+      "tpo": "travel",
+      "moods": ["casual"],
+      "required": [
+        ["tshirt", "shirt"],
+        ["jeans", "slacks"]
+      ],
+      "optional": ["jumper", "sneakers", "sandals", "cross_bag"],
+      "forbidden": ["jacket", "loafer"],
+      "formality_range": [1, 2],
+      "silhouette_hints": ["regular", "wide", "oversized"],
+      "price_hint": "15000~120000"
+    },
+    {
+      "recipe_id": "male_event",
+      "gender": "male",
+      "tpo": "event",
+      "moods": ["classic", "dandy"],
+      "required": [
+        ["jacket"],
+        ["slacks"]
+      ],
+      "optional": ["shirt", "loafer", "tote_bag"],
+      "forbidden": ["hoodie", "sneakers", "shoulder_bag", "tshirt", "jeans"],
+      "formality_range": [4, 5],
+      "silhouette_hints": ["slim", "fitted", "regular"],
+      "price_hint": "50000~400000"
+    },
+    {
+      "recipe_id": "male_workout",
+      "gender": "male",
+      "tpo": "workout",
+      "moods": ["street"],
+      "required": [
+        ["tshirt"],
+        ["slacks", "jeans", "leggings"]
+      ],
+      "optional": ["sneakers", "cross_bag"],
+      "forbidden": ["shirt", "loafer", "jacket", "jeans"],
+      "formality_range": [1, 1],
+      "silhouette_hints": ["slim", "regular"],
+      "price_hint": "15000~100000"
+    }
+  ]
+}
