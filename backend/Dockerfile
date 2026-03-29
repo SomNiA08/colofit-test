@@ -15,8 +15,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 소스 코드 복사
 COPY . .
 
-# 포트 (Railway는 $PORT 환경변수로 동적 포트 사용)
-EXPOSE $PORT
-
-# 실행
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# 실행 (Railway는 $PORT 환경변수로 포트 전달)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
