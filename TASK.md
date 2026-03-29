@@ -159,12 +159,12 @@
 - [x] Vercel 연결 (frontend/) — `vercel.json` 생성 (rootDirectory: frontend)
 - [x] Railway 연결 (backend/) — `Dockerfile` + `railway.json` 생성
 - [x] 환경변수 설정 (각 플랫폼) — `.env.example` 생성 (frontend, backend)
-- [ ] 배포 확인: 프론트 + 백엔드 둘 다 접속 가능 ⚠️ 실제 플랫폼 연결 후 확인 필요
+- [x] 배포 확인: 프론트 + 백엔드 둘 다 접속 가능
 
 ### W1 완료 기준
 - [ ] 상품 DB 20,000건 이상 (Task 1.5)
 - [ ] 코디 1,500개 이상, Gemini 평가 통과 (Task 1.11)
-- [ ] 프론트/백엔드 빈 프로젝트 배포 성공 (Task 1.16)
+- [x] 프론트/백엔드 빈 프로젝트 배포 성공 (Task 1.16)
 
 ---
 
