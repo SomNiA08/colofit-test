@@ -3419,6 +3419,202 @@ colorfit/
 
 ---
 
+## 19. 디지털 옷장 — 아바타 기반 내 옷장 (v1.4 신규)
+
+> **기획 배경:** /office-hours 세션 2차 (2026-04-05)에서 도출된 확장 방향.
+> 기존 ColorFit(외부 상품 추천)과 **"내가 실제로 가진 옷" 관리**를 통합하여
+> "추천된 옷 + 내 옷장 활용" 양쪽을 커버하는 서비스로 발전시킨다.
+> 기존 핵심 사수 라인(온보딩→피드→추천이유→save/dislike→외부링크)을 건드리지 않으며,
+> "내 옷장" 탭으로 분리 제공한다.
+
+### 19.1 컨셉 — 싸이월드 미니미 × 실제 옷장
+
+싸이월드의 핵심은 "꾸미기 + 보여주기"였다. 그 중독성의 정체는 **내가 만든 캐릭터**가 내 표현 수단이 된다는 것.
+
+ColorFit 디지털 옷장은 그 구조를 가져오되, 아이템이 허구의 도토리 아이템이 아닌 **내 실제 옷**이다.
+
+```
+[기존 ColorFit]
+외부 DB 상품 → 추천 피드 → "이 옷 어때요?" → 쇼핑몰 링크
+
+[확장 ColorFit]
+내 옷 사진 → 아바타 착용 → 내 옷장 기반 코디 조합 추천
+                                        ↕
+                          외부 DB 추천 (기존) + 내 옷장 활용
+```
+
+**핵심 가치:**
+- 이미 산 옷을 최대한 활용하게 해준다 (낭비 줄이기)
+- 내 실제 옷 데이터가 쌓일수록 추천이 더 정확해진다
+- 소셜 공유 시 "내 진짜 옷장으로 만든 코디"라는 차별점
+
+### 19.2 기능 범위
+
+| 기능 | 우선순위 | 설명 |
+|------|---------|------|
+| 옷 사진 등록 | Must (Phase 1) | 촬영/갤러리 → 배경 제거 → 아바타 아이템 변환 |
+| 아바타 착용 미리보기 | Must (Phase 1) | 내 아바타에 등록 아이템 착용해보기 |
+| 내 옷장 목록 | Must (Phase 1) | 카테고리별 아이템 그리드 |
+| 내 옷장 기반 코디 추천 | Should (Phase 2) | 보유 아이템으로 구성 가능한 코디 제안 |
+| 퍼스널컬러 적합도 표시 | Should (Phase 2) | 등록 아이템의 내 톤 적합도 뱃지 |
+| 코디 공유 | Could (Phase 3) | 내 아바타+코디 공유 카드 생성 |
+| 스타일 대결 | Could (Phase 3) | 유저 간 코디 투표, 주간 랭킹 |
+| 구매내역 자동 연동 | Could (Phase 3) | 쿠팡/무신사 이메일 파싱 → 자동 등록 |
+
+### 19.3 아이템 데이터 모델
+
+```python
+# backend/app/models/wardrobe_item.py
+class WardrobeItem(Base):
+    __tablename__ = "wardrobe_items"
+
+    id: UUID
+    user_id: UUID                    # users 테이블 FK
+    image_url: str                   # Supabase Storage (배경 제거된 PNG)
+    category: str                    # "상의" | "하의" | "아우터"
+    color_tags: list[str]            # GPT-4o 추출, 최대 3개 (예: ["코랄", "화이트"])
+    avatar_layer_id: str             # 렌더링 슬롯 ID ("top_slot" | "bottom_slot" | "outer_slot")
+    tone_match: str | None           # 기존 tone_id와 매핑 (선택, Phase 2)
+    needs_review: bool               # 분류 불확실 시 True → 프론트에서 수동 확인 요청
+    created_at: datetime
+```
+
+### 19.4 아이템 등록 파이프라인
+
+```
+[1] 사진 촬영/업로드
+    ↓
+[2] remove.bg API → 배경 제거 PNG 반환
+    └→ 실패/불량 시: "단색 배경에서 재촬영해주세요" 가이드 + 재시도
+    ↓
+[3] GPT-4o vision → category + color_tags[] 자동 추출
+    └→ 불확실 시: needs_review=True → 프론트에서 카테고리 드롭다운 수동 선택
+    ↓
+[4] Supabase Storage에 PNG 저장 → image_url 반환
+    ↓
+[5] wardrobe_items 테이블 INSERT
+    ↓
+[6] 아바타 미리보기 렌더링 (프론트 Canvas)
+```
+
+**API 비용 계획:**
+| 서비스 | 단가 | MVP 100장 기준 |
+|--------|------|--------------|
+| remove.bg | 무료 50장/월 → $9/200장 | ~$0 (무료 내) |
+| GPT-4o vision | ≈$0.003/장 | ≈300원 |
+| Supabase Storage | 1GB 무료 | ~$0 |
+
+### 19.5 아바타 렌더링 시스템
+
+**방식:** 고정 캐릭터 실루엣 SVG + Canvas PNG 오버레이
+
+```
+아바타 구조:
+┌─────────────────┐
+│  [outer_slot]   │  ← 아우터 레이어 (PNG, 최상위)
+│  [top_slot]     │  ← 상의 레이어 (PNG)
+│  [bottom_slot]  │  ← 하의 레이어 (PNG)
+│  [body_svg]     │  ← 고정 캐릭터 실루엣 (SVG, 최하위)
+└─────────────────┘
+```
+
+**구현 방법:**
+```typescript
+// AvatarCanvas.tsx — Canvas 방식 (권장)
+const drawAvatar = (canvas, layers) => {
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(bodyImage, 0, 0);           // 1. 기본 실루엣
+  if (layers.bottom) ctx.drawImage(layers.bottom, BOTTOM_X, BOTTOM_Y, BOTTOM_W, BOTTOM_H);
+  if (layers.top)    ctx.drawImage(layers.top,    TOP_X,    TOP_Y,    TOP_W,    TOP_H);
+  if (layers.outer)  ctx.drawImage(layers.outer,  OUTER_X,  OUTER_Y,  OUTER_W,  OUTER_H);
+};
+
+// 폴백: CSS position:absolute 방식 (Canvas 실패 시)
+// <img style="position:absolute; top:TOP_Y; left:TOP_X; width:TOP_W;" src={topImageUrl} />
+```
+
+**아바타 초기 설정 (온보딩 확장):**
+- 기존 온보딩 성별 선택 시 → 성별에 따른 기본 실루엣 SVG 자동 선택
+- 추가 커스터마이징: 체형(슬림/보통/베이직), 피부톤(밝음/보통/어두움) — Phase 2
+
+### 19.6 화면 설계
+
+#### 내 옷장 메인 (`/wardrobe`)
+
+```
+┌─────────────────────────────────┐
+│  ← 내 옷장                  +  │  ← + 버튼: 사진 등록
+├─────────────────────────────────┤
+│                                 │
+│      [아바타 프리뷰 영역]         │  ← 40%, 현재 선택 착용 중인 코디
+│      캐릭터 + 착용 아이템         │
+│                                 │
+├─────────────────────────────────┤
+│ [전체] [상의] [하의] [아우터]    │  ← 카테고리 탭 필터
+├─────────────────────────────────┤
+│  [아이템] [아이템] [아이템]       │
+│  [아이템] [아이템] [아이템]       │  ← 2열 그리드
+│     (배경 제거 PNG + 뱃지)       │
+└─────────────────────────────────┘
+```
+
+#### 사진 등록 플로우 (`/wardrobe/add`)
+
+```
+Step 1: 사진 선택
+  → 카메라 촬영 / 갤러리 (input[type=file capture=environment])
+  → 권장: "단색 배경, 옷을 평평하게 펼치거나 걸어서 촬영"
+
+Step 2: 처리 중 (≤ 30초)
+  → 스피너 + "배경을 지우는 중..."
+  → 완료 시 → Step 3
+
+Step 3: 결과 확인
+  → 아바타 위에 착용 미리보기
+  → 카테고리 표시 (needs_review=True면 드롭다운 선택 강제)
+  → 색상 태그 표시 (수정 가능)
+  → [저장] / [다시 찍기]
+```
+
+**성공 기준 (Phase 1):**
+- 사진 업로드 버튼 클릭 → 아바타 착용 화면 렌더링 완료: **30초 이내**
+  (측정: 업로드 시작 ~ Canvas 렌더링 완료)
+- 처음 사용하는 유저가 설명 없이 아이템 등록 완료 가능
+
+### 19.7 기존 추천 엔진과의 통합 (Phase 2)
+
+등록된 내 옷장 아이템과 기존 추천 엔진을 연결하는 두 가지 방식:
+
+**방식 A: "내 옷 기반 코디" 탭**
+- 피드에 "내 옷으로 코디" 탭 추가
+- 보유 상의 × 보유 하의 조합 + 기존 StyleFilter(SF 스코어링) 적용
+- "내 옷 중 퍼스널컬러 적합도 높은 조합" 우선 정렬
+
+**방식 B: "부족한 아이템 추천"**
+- 내 옷장 데이터 분석 → 퍼스널컬러에 맞는 하의가 없으면 → 해당 카테고리 추천 강화
+- PreferenceTracker와 연동: 내 옷장 아이템의 tone_match → user 가중치 보정
+
+### 19.8 Phase 0: 수요 검증 프로토콜
+
+개발 착수 전 5명 수동 테스트로 수요를 확인한다.
+
+**실행 방법:**
+1. Figma로 간단한 캐릭터 실루엣 1개 제작 (또는 무료 PNG 활용)
+2. 지인 5명에게 사진 요청 → Photoshop/Figma로 수동 합성
+3. 결과 공유 후 반응 기록
+
+**Go/No-go 기준:**
+- Go: 5명 중 3명 이상 "신기한데" 또는 "써보고 싶어"
+- No-go: 기준 미달 → 아바타 방향 재검토, 기존 추천 엔진에 집중
+
+**Go 판정 후 기술 스파이크 (1~2일):**
+- remove.bg API 테스트: 옷 사진 3장 배경 제거 품질 확인
+- Canvas 오버레이 PoC: PNG → 캐릭터 위에 겹치기 → 팀 공유
+
+> 참조: TASK.md Phase 0 섹션 (Task P0.1, P0.2)
+
+---
+
 ## 변경 로그
 
 | 버전 | 날짜 | 주요 변경 |
@@ -3428,4 +3624,5 @@ colorfit/
 | v1.2 | 2026-03-27 | 하이브리드 분류 체계(키워드+LLM 폴백), TPO×무드 레시피 기반 코디 생성, 성별 선택+성별별 TPO/무드 분화, Phase 구분 제거(전체 제품 설계로 통합), Hard Filter/Soft Score 아키텍처 분리, 알고리즘 QA(가중치 PCF 0.25/SF 0.25, 축간 패널티, PE 캡, SF 컷오프 55점) |
 | v1.3 | 2026-03-28 | UI/UX 전면 보강(11개 화면 상세 기획, 디자인 철학/레퍼런스, 인터랙션&모션 설계 12개 맵), 비주얼 취향 분석(Step 5) + Style Seed 콜드스타트 해결, 취향 초기화/재분석, 컬러 체계 REFERENCE X Vol.1 기반 보강(CMYK/톤/무드/배색), 기능 리스트 45→51개, 성별 필터 하이브리드 3단계 재설계 |
 | v1.3.1 | 2026-03-28 | /office-hours 디자인 리뷰 반영: P1 우선 원칙(H7 최소 안전망으로 운용, 필터율 30% 상한), 초기 전략 사용자 획득 우선(12.0 추가, MVP 지표 3개), Fallback 전략(13.2.1 추가, 4단계 축소 순서), Gemini API 비용 추산(14.5 갱신) |
+| v1.4 | 2026-04-05 | /office-hours 세션 2차 반영: 디지털 옷장 섹션 19 신설 (싸이월드 미니미 × 실제 옷장 컨셉, 아바타 착용 시스템, 배경 제거 파이프라인, Phase 0 수요 검증 프로토콜) |
 | v1.4 | 2026-03-28 | /design-consultation + /plan-eng-review 반영. **서체:** Noto Serif KR → Nanum Myeongjo 700/800 (한국 패션 매거진 실제 서체). **인프라:** Redis MVP 제거, 스코어 프리컴퓨팅 + PostgreSQL 인덱스로 대체. **DB 스키마 보강:** users(gender, tpo_list), products(gender, silhouette, formality), outfits(designed_tpo, designed_moods, gender, style_details, llm_quality_score), style_seeds 테이블, user_preferences 테이블 추가. **병렬화 전략(13.4):** 4 Lane worktree 병렬 실행 계획. **테스트 전략(13.5):** scoring/style_filter/feed_builder 100% 커버리지 목표, pytest + vitest 프레임워크. 별도 DESIGN.md 파일 생성(Nanum Myeongjo + Pretendard + Marsala 웜 팔레트 + 웜 톤 시맨틱 컬러) |

@@ -1,0 +1,51 @@
+{
+  "_meta": {
+    "description": "아이템별 포멀도 (1~5). 1=스포츠/애슬레저, 2=캐주얼, 3=스마트캐주얼, 4=비즈니스캐주얼, 5=포멀",
+    "scale": {
+      "1": "스포츠/애슬레저 (레깅스, 운동화, 후드집업)",
+      "2": "캐주얼 (청바지, 스니커즈, 티셔츠)",
+      "3": "스마트캐주얼 (치노팬츠, 로퍼, 니트)",
+      "4": "비즈니스캐주얼 (슬랙스, 블라우스, 더비슈즈)",
+      "5": "포멀 (정장, 원피스, 하이힐, 클러치)"
+    }
+  },
+  "formality": {
+    "blouse": 4,
+    "shirt": 4,
+    "knit": 3,
+    "tshirt": 2,
+    "hoodie": 1,
+    "sweatshirt": 2,
+    "croptop": 2,
+    "cardigan": 3,
+
+    "slacks": 4,
+    "jeans": 2,
+    "wide_pants": 3,
+    "skirt": 4,
+    "mini_skirt": 3,
+    "shorts": 2,
+    "jogger": 1,
+    "leggings": 1,
+    "chino": 3,
+
+    "blazer": 4,
+    "trench": 4,
+    "coat": 4,
+    "padding": 2,
+    "jacket": 3,
+    "jumper": 2,
+    "suit_jacket": 5,
+
+    "dress": 4,
+    "jumpsuit": 3,
+
+    "sneakers": 2,
+    "loafer": 3,
+    "heels": 5,
+    "boots": 3,
+    "sandals": 2,
+    "derby": 4,
+    "slipper": 1
+  }
+}

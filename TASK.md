@@ -1,10 +1,31 @@
 # ColorFit Task Tracker
 
 **프로젝트 기간:** 5주 (W1: 3/24~3/28 ~ W5: 4/21~4/25)
-**현재 상태:** W1 진행 중
+**현재 상태:** W2 진행 중 (2026-04-05)
 **Fallback 기준:** W3 금요일에 가격비교 미완이면 Fallback 발동
 
 **사용법:** Claude Code에게 `"Task 1.3을 진행해줘"` 처럼 번호로 지시하세요.
+
+---
+
+## Phase 0: 수요 검증 (이번 주, W2 병행)
+
+> office-hours 세션에서 도출된 새 기능 방향 (디지털 옷장 + 아바타 착용) 검증.
+> 개발 착수 전 5명 반응 수집. 3명 이상 "신기한데" or "써보고 싶어"면 W3에 Lane E 착수.
+
+**Task P0.1 — 수동 컨시어지 테스트**
+- [ ] Figma로 아바타 캐릭터 기본 실루엣 1개 제작 (또는 무료 스티커 활용)
+- [ ] 지인 5명에게 "내 옷 사진 보내줘 → 아바타에 입혀줄게" 메시지 발송
+- [ ] Figma/Photoshop으로 수동으로 옷 이미지 아바타 위에 합성
+- [ ] 반응 기록: 이름, "신기한데"/"그래서?"/"써보고 싶어" 등 그대로 메모
+- [ ] **Go/No-go 판단**: 5명 중 3명 이상 긍정 반응 → Task P0.2 진행, 미달 → 아바타 방향 재검토
+
+**Task P0.2 — Go 판정 시 기술 스파이크 (1~2일)**
+- [ ] remove.bg API 테스트: 옷 사진 3장으로 배경 제거 품질 확인 (무료 50장/월)
+- [ ] Canvas/SVG 오버레이 방식 PoC: 배경 제거 PNG → 고정 캐릭터 위에 겹치기
+- [ ] 결과 스크린샷으로 팀 공유 → W3 Lane E 착수 여부 최종 결정
+
+---
 
 ---
 
@@ -115,6 +136,7 @@
 - [x] 평가 결과를 `llm_quality_score` 필드에 저장
 - ⚠️ 1,212개 평가 → 62개 제거 → 최종 1,150개 (목표 1,500개 미달, 남성 상품 부족 동일 원인)
 - 점수 분포: 5점 56개 / 4점 689개 / 3점 405개 / 2점(제거) 62개
+- Gemini 재평가 (2026-03-30): 통과 1,056개 | 실제 평가 399개, Rate Limit 기본 3점 처리 813개 ⚠️
 
 ### Lane B: 인프라 셋업
 
@@ -172,105 +194,112 @@
 
 ### Lane C: 추천 엔진 코어
 
-**Task 2.1 — PCF 스코어링 (퍼스널컬러 적합도)**
-- [ ] `backend/app/services/scoring.py` 생성
-- [ ] `calculate_pcf(item_tone_ids, item_hex_colors, user_tone_id)` 함수
-- [ ] 톤 레벨 매칭 (동일 100, 호환 95) + 색상 레벨 매칭 (RGB 거리 → 점수)
-- [ ] pytest 테스트: 동일 톤, 호환 톤, 반대 시즌, 경계값
-- [ ] 참조: 기획서 섹션 5.5.1
+**Task 2.1 — PCF 스코어링 (퍼스널컬러 적합도)** ✅ 완료 (2026-04-05)
+- [x] `backend/app/services/scoring.py` 생성
+- [x] `calculate_pcf(item_tone_ids, item_hex_colors, user_tone_id)` 함수
+- [x] 톤 레벨 매칭 (동일 100, 호환 95) + 색상 레벨 매칭 (RGB 거리 → 점수)
+- [x] pytest 테스트: 동일 톤, 호환 톤, 반대 시즌, 경계값 — 24/24 통과
+- [x] 참조: 기획서 섹션 5.5.1
 
-**Task 2.2 — OF 스코어링 (TPO 적합도)**
-- [ ] `calculate_of(outfit_tags, user_tpo_list)` 함수
-- [ ] TPO 동의어 확장 매핑 (commute↔office 등)
-- [ ] match_count 기반 점수 변환 (30점 하한)
-- [ ] pytest 테스트: 정확 매칭, 동의어 매칭, 미매칭
-- [ ] 참조: 기획서 섹션 5.5.2
+**Task 2.2 — OF 스코어링 (TPO 적합도)** ✅ 완료 (2026-04-05)
+- [x] `calculate_of(outfit_tags, user_tpo_list)` 함수
+- [x] TPO 동의어 확장 매핑 (commute↔office 등, 11개 TPO 커버)
+- [x] match_count 기반 점수 변환 (30점 하한)
+- [x] pytest 테스트: 정확 매칭, 동의어 매칭, 미매칭 — 26개 테스트 전체 통과 (누적 50/50)
+- [x] 참조: 기획서 섹션 5.5.2
 
-**Task 2.3 — CH 스코어링 (색상 조화)**
-- [ ] `calculate_ch(item_hex_colors)` 함수
-- [ ] 모든 아이템 쌍의 RGB 거리 → 구간별 점수 (유사색/보색/과도한 대비)
-- [ ] 채도 보너스 (+5점, 표준편차 0.15~0.40)
-- [ ] pytest 테스트: 올블랙, 톤온톤, 보색, 형광+파스텔
-- [ ] 참조: 기획서 섹션 5.5.3
+**Task 2.3 — CH 스코어링 (색상 조화)** ✅ 완료 (2026-04-05)
+- [x] `calculate_ch(item_hex_colors)` 함수
+- [x] 모든 아이템 쌍의 RGB 거리 → 구간별 점수 (유사색/보색/과도한 대비)
+- [x] 채도 보너스 (+5점, 표준편차 0.15~0.40)
+- [x] pytest 테스트: 올블랙, 톤온톤, 보색, 형광+파스텔 — 29개 테스트 전체 통과 (누적 79/79)
+- [x] 참조: 기획서 섹션 5.5.3
 
-**Task 2.4 — PE 스코어링 (가격 효율)**
-- [ ] `calculate_pe(total_price, budget_min, budget_max)` 함수
-- [ ] 3개 Case: 범위 내 (중앙 가까울수록 높음), 초과 (감점), 미만 (완만 감점, 최저 40점)
-- [ ] pytest 테스트: 중앙, 상한, 하한, 50%+ 초과, 극단 저가
-- [ ] 참조: 기획서 섹션 5.5.4
+**Task 2.4 — PE 스코어링 (가격 효율)** ✅ 완료 (2026-04-05)
+- [x] `calculate_pe(total_price, budget_min, budget_max)` 함수
+- [x] 3개 Case: 범위 내 (중앙 가까울수록 높음), 초과 (감점), 미만 (완만 감점, 최저 40점)
+- [x] pytest 테스트: 중앙, 상한, 하한, 50%+ 초과, 극단 저가 — 19개 테스트 전체 통과 (누적 98/98)
+- [x] 참조: 기획서 섹션 5.5.4
 
-**Task 2.5 — SF 스코어링 (스타일 적합도)**
-- [ ] `calculate_sf(items)` 함수
-- [ ] 카테고리 궁합 점수 (50%) — `data/style_compat.json` 매트릭스 참조
-- [ ] 실루엣 밸런스 점수 (25%) — Y/A/I/X 라인 15개 규칙
-- [ ] 포멀도 일관성 점수 (25%) — 표준편차 x 40 감점
-- [ ] pytest 테스트: 블라우스+슬랙스(높음), 후드+정장(낮음), 경계값 55점
-- [ ] 참조: 기획서 섹션 5.5.5, 6.6
+**Task 2.5 — SF 스코어링 (스타일 적합도)** ✅ 완료 (2026-04-05)
+- [x] `calculate_sf(items)` 함수
+- [x] 카테고리 궁합 점수 (50%) — `data/style_compat.json` 매트릭스 참조
+- [x] 실루엣 밸런스 점수 (25%) — Y/A/I/X 라인 15개 규칙
+- [x] 포멀도 일관성 점수 (25%) — 표준편차 x 40 감점
+- [x] pytest 테스트: 블라우스+슬랙스(86.25점), 후드+정장(31.25점 < 55점 컷오프) — 34개 테스트 전체 통과 (누적 132/132)
+- [x] 참조: 기획서 섹션 5.5.5, 6.6
 
-**Task 2.6 — 스타일 호환성 데이터 파일**
-- [ ] `backend/data/style_compat.json` 생성 — 카테고리 궁합 227개 조합 점수
-- [ ] `backend/data/silhouette_rules.json` 생성 — 실루엣 15개 조합
-- [ ] `backend/data/formality_map.json` 생성 — 아이템별 포멀도 (1~5) 33개 규칙
-- [ ] 참조: 기획서 섹션 6.6
+**Task 2.6 — 스타일 호환성 데이터 파일** ✅ 완료 (2026-04-05)
+- [x] `backend/data/style_compat.json` 생성 — 카테고리 궁합 227개 조합 점수
+- [x] `backend/data/silhouette_rules.json` 생성 — 실루엣 15개 조합
+- [x] `backend/data/formality_map.json` 생성 — 아이템별 포멀도 (1~5) 33개 규칙
+- [x] 참조: 기획서 섹션 6.6
 
-**Task 2.7 — StyleFilter (규칙 기반 사전 필터)**
-- [ ] `backend/app/services/style_filter.py` 생성
-- [ ] `detect_category(title, category3)` — 키워드 → 캐시 → LLM 3단계
-- [ ] `filter_outfit(items)` — 3축 가중합 계산, 55점 미만 False
-- [ ] pytest 테스트: 통과 코디, 탈락 코디, 55점 경계
-- [ ] 참조: 기획서 섹션 6.6
+**Task 2.7 — StyleFilter (규칙 기반 사전 필터)** ✅ 완료 (2026-04-05)
+- [x] `backend/app/services/style_filter.py` 생성
+- [x] `detect_category(title, category3)` — 키워드 → 캐시 → LLM 3단계
+- [x] `filter_outfit(items)` — 3축 가중합 계산, 55점 미만 False
+- [x] pytest 테스트: 통과(블라우스+슬랙스), 탈락(후드+정장), 55점 경계 — 26개 테스트 전체 통과 (누적 158/158)
+- [x] 참조: 기획서 섹션 6.6
 
-**Task 2.8 — Hard Filter 체인**
-- [ ] `backend/app/services/feed_builder.py` 생성
-- [ ] Hard Filter 8단계 순차 적용 (H1 성별 → H2 예산 → ... → H8 StyleFilter)
-- [ ] 각 필터는 독립 함수로 분리
-- [ ] pytest 테스트: 각 필터별 통과/탈락 케이스
-- [ ] 참조: 기획서 섹션 5.4 (Hard Filter 상세)
+**Task 2.8 — Hard Filter 체인** ✅ 완료 (2026-04-05)
+- [x] `backend/app/services/feed_builder.py` 생성
+- [x] Hard Filter 8단계 순차 적용 (H1 성별 → H2 예산 → H3 계절 → H4 TPO → H5 브랜드 → H7 톤 → H8 StyleFilter → H6 LLM)
+- [x] 각 필터는 독립 함수로 분리 (h1_gender ~ h8_style_filter + apply_hard_filters)
+- [x] pytest 테스트: 각 필터별 통과/탈락 + 통합 체인 — 50개 테스트 전체 통과 (누적 208/208)
+- [x] 참조: 기획서 섹션 5.4 (Hard Filter 상세)
 
-**Task 2.9 — Soft Score + 리랭킹**
-- [ ] feed_builder.py에 Soft Score 계산 추가 (5축 가중합)
-- [ ] 리랭킹: 완성 코디 가산(+3점), dislike 제외, 톤 다양성(동일 톤 3개 제한), 메인아이템 중복 제거
-- [ ] 개인화 보정 (-10 ~ +10)
-- [ ] 상위 200개 반환
-- [ ] 참조: 기획서 섹션 6.1
+**Task 2.9 — Soft Score + 리랭킹** ✅ 완료 (2026-04-05)
+- [x] feed_builder.py에 Soft Score 계산 추가 (5축 가중합: PCF×0.25 + OF×0.20 + CH×0.15 + PE×0.15 + SF×0.25)
+- [x] 리랭킹: 완성 코디 가산(+3점), dislike 제외, 톤 다양성(동일 톤 3개 제한), 메인아이템 중복 제거(1개 제한)
+- [x] 개인화 보정 (-10 ~ +10): 선호 톤/카테고리/브랜드 일치 가감
+- [x] 상위 200개 반환
+- [x] pytest 테스트: 5축 가중합, 가중치 오버라이드, 완성도 가산, dislike 제외, 톤 다양성, 메인아이템 중복, 개인화 보정 순위역전 — 22개 테스트 전체 통과 (누적 230/230)
+- [x] 참조: 기획서 섹션 6.1
 
-**Task 2.10 — 추천 이유 생성**
-- [ ] `backend/app/services/reason_generator.py` 생성
-- [ ] 5축 가중 기여도 계산 → 상위 2개 축 선택
-- [ ] high(75점+) / mid(75점 미만) 템플릿 분기
-- [ ] 톤별 한글 이름 매핑 ("여름쿨소프트 핵심 컬러...")
-- [ ] pytest 테스트: PCF 최고 기여, OF 최고 기여, 동점 처리
-- [ ] 참조: 기획서 섹션 6.4
+**Task 2.10 — 추천 이유 생성** ✅ 완료 (2026-04-06)
+- [x] `backend/app/services/reason_generator.py` 생성
+- [x] 5축 가중 기여도 계산 → 상위 2개 축 선택
+- [x] high(75점+) / mid(75점 미만) 템플릿 분기
+- [x] 톤별 한글 이름 매핑 ("여름쿨소프트 핵심 컬러...")
+- [x] pytest 테스트: PCF 최고 기여, OF 최고 기여, 동점 처리, 75점 경계, 가중치 오버라이드 등 — 24개 테스트 전체 통과 (누적 254/254)
+- [x] 참조: 기획서 섹션 6.4
 
-**Task 2.11 — Feed API 엔드포인트**
-- [ ] `backend/app/routers/feed.py` — GET /api/feed
-- [ ] 파라미터: tone_id, tpo, gender, budget_min, budget_max, page
-- [ ] Profile Load → Filter → StyleFilter → Score → Rerank → Reason 전체 파이프라인
-- [ ] 응답: 코디 리스트 + 5축 스코어 + 이유 2줄
-- [ ] `backend/app/routers/outfit.py` — GET /api/outfit/{id}
-- [ ] Pydantic 스키마 정의 (`schemas/outfit.py`)
+**Task 2.11 — Feed API 엔드포인트** ✅ 완료 (2026-04-06)
+- [x] `backend/app/routers/feed.py` — GET /api/feed
+- [x] 파라미터: tone_id, tpo, gender, budget_min, budget_max, page
+- [x] Profile Load → Filter → StyleFilter → Score → Rerank → Reason 전체 파이프라인
+- [x] 응답: 코디 리스트 + 5축 스코어 + 이유 2줄
+- [x] `backend/app/routers/outfit.py` — GET /api/outfit/{id}
+- [x] Pydantic 스키마 정의 (`schemas/outfit.py`)
 
-**Task 2.12 — 스코어 프리컴퓨팅**
-- [ ] `backend/scripts/precompute_scores.py` 생성
-- [ ] 전체 코디에 대해 기본 5축 스코어 사전 계산
-- [ ] outfits.scores JSONB에 저장
-- [ ] 런타임에는 개인화 보정만 적용
+**Task 2.12 — 스코어 프리컴퓨팅** ✅ 완료 (2026-04-06)
+- [x] `backend/scripts/precompute_scores.py` 생성
+- [x] CH(색상 조화)·SF(스타일 적합도) 사전 계산 — 사용자 무관 2축 (PCF·OF·PE는 사용자별 런타임 계산)
+- [x] outfits.scores JSONB에 저장 (--dry-run 옵션 지원)
+- [x] compute_soft_scores()에서 캐시된 CH·SF 재사용, 없으면 런타임 폴백
+- [x] 기존 테스트 254개 전체 통과 (누적 254/254)
 
 ### Lane D: 온보딩 + 피드 UI
 
-**Task 2.13 — 온보딩 공통 레이아웃**
-- [ ] `frontend/app/onboarding/layout.tsx` — 공통 레이아웃
-- [ ] 상단 진행 바 (5단계, Marsala 채움)
-- [ ] 뒤로가기 버튼
-- [ ] 좌→우 슬라이드 전환 (Framer Motion AnimatePresence)
-- [ ] 참조: 기획서 섹션 8.4.1
+**Task 2.13 — 온보딩 공통 레이아웃** ✅ 완료 (2026-04-06)
+- [x] `frontend/app/onboarding/layout.tsx` — 공통 레이아웃
+- [x] 상단 진행 바 (5단계, Marsala 채움, 세그먼트별 0.4s ease-out 애니메이션)
+- [x] 뒤로가기 버튼 (Step 1에서는 숨김, router.back())
+- [x] 좌→우 슬라이드 전환 (Framer Motion AnimatePresence, mode="wait")
+- [x] MotionConfig reducedMotion="user" — prefers-reduced-motion 접근성 지원
+- [x] TypeScript 타입 에러 없음
+- [x] 참조: 기획서 섹션 8.4.1
 
-**Task 2.14 — 온보딩 Step 1: 성별 선택**
-- [ ] `frontend/app/onboarding/step1/page.tsx`
-- [ ] "나에 대해 알려주세요" 헤드라인 (Nanum Myeongjo 28px)
-- [ ] 여성/남성 2개 카드 (가로 배치, 3:4 비율)
-- [ ] 탭 시 scale 1.05 + Marsala 아웃라인 → 자동 다음 Step
-- [ ] "건너뛰기" 텍스트 링크
+**Task 2.14 — 온보딩 Step 1: 성별 선택** ✅ 완료 (2026-04-06)
+- [x] `frontend/app/onboarding/step1/page.tsx`
+- [x] "나에 대해 알려주세요" 헤드라인 (Nanum Myeongjo 28px) + 서브텍스트
+- [x] 여성/남성 2개 카드 (가로 배치, w-[45%], aspect-[3/4], radius-xl)
+- [x] 탭 시 scale 1.05 + Marsala 아웃라인 → 400ms 후 자동 Step 2 이동
+- [x] 진입 애니메이션: fadeInUp 0.4s, stagger 0.15s
+- [x] "건너뛰기" 텍스트 링크 (기본값 female 저장 후 Step 2 이동)
+- [x] 성별 선택값 localStorage 저장 (onboarding_gender)
+- [x] TypeScript 타입 오류 없음
 
 **Task 2.15 — 온보딩 Step 2: 퍼스널컬러 선택**
 - [ ] `frontend/app/onboarding/step2/page.tsx`
@@ -403,15 +432,64 @@
 - [ ] "취향 다시 분석하기" → Step 5 재진행
 - [ ] "취향 초기화" → 확인 다이얼로그 → 데이터 삭제
 
+### Lane E: 디지털 옷장 (Phase 0 Go 판정 시에만 진행)
+
+> Phase 0에서 수요 확인된 경우에만 착수. W3 Lane A~D와 병렬 진행.
+> 기존 추천 엔진 흐름(핵심 사수 라인)을 절대 밀지 않는다.
+
+**Task 3.E1 — 내 옷장 DB 모델 + API**
+- [ ] `backend/app/models/wardrobe_item.py` — WardrobeItem 테이블 생성
+  - 필드: `{ id, user_id, image_url, category("상의"|"하의"|"아우터"), color_tags[], avatar_layer_id, created_at }`
+- [ ] `backend/app/routers/wardrobe.py`
+  - `POST /api/wardrobe/items` — 아이템 등록 (이미지 + 메타데이터)
+  - `GET /api/wardrobe/items` — 내 아이템 목록
+  - `DELETE /api/wardrobe/items/{id}` — 삭제
+- [ ] Supabase Storage 연동 — 이미지 업로드 버킷 설정
+- [ ] pytest 테스트
+
+**Task 3.E2 — 배경 제거 파이프라인**
+- [ ] `backend/app/services/background_remover.py`
+- [ ] remove.bg API 연동 (API key: `.env`에 `REMOVEBG_API_KEY` 추가)
+- [ ] 실패/불량 시 응답: `{ "success": false, "message": "배경 제거가 어렵습니다. 단색 배경에서 재촬영해주세요." }`
+- [ ] GPT-4o vision으로 category + color_tags 3개 자동 추출
+  - 분류 불확실 시 → `needs_review: true` 플래그 → 프론트에서 수동 선택 드롭다운 표시
+- [ ] 비용 계획: GPT-4o 이미지 1장 ≈ $0.003, 테스트 100장 기준 약 300원
+
+**Task 3.E3 — 아바타 기본 렌더링 (프론트엔드)**
+- [ ] `frontend/components/Avatar.tsx` — 고정 캐릭터 실루엣 (SVG 기반)
+  - 성별 선택값에 따라 기본 실루엣 SVG 로드
+  - 레이어 슬롯: top_slot / bottom_slot / outer_slot (각 절대 좌표 고정)
+- [ ] `frontend/components/AvatarCanvas.tsx` — Canvas + 아이템 PNG 오버레이
+  - `drawImage()`로 슬롯 좌표에 배경 제거된 PNG 렌더링
+  - 상/하의/아우터 순서대로 레이어 쌓기
+- [ ] 스파이크 실패 시 CSS 대안: `position: absolute` + `object-fit: contain`으로 폴백
+
+**Task 3.E4 — 내 옷장 화면 (프론트엔드)**
+- [ ] `frontend/app/wardrobe/page.tsx` — 내 옷장 메인
+  - 아바타 프리뷰 영역 (상단 40%)
+  - 아이템 그리드 (하단 60%): 카테고리 탭 필터 (전체/상의/하의/아우터)
+  - 아이템 카드: 배경 제거 이미지 + 카테고리 뱃지
+  - "+" 플로팅 버튼 → 사진 등록 플로우
+- [ ] `frontend/app/wardrobe/add/page.tsx` — 사진 등록 플로우
+  - 카메라 촬영 / 갤러리 선택 (모바일 웹 `<input type="file" accept="image/*" capture="environment">`)
+  - 업로드 → 배경 제거 → 아바타 미리보기 → 카테고리 확인/수정 → 저장
+  - 30초 처리 시간 스피너 + "배경을 지우는 중..." 안내
+
+**Task 3.E5 — 하단 탭바에 "내 옷장" 탭 추가**
+- [ ] 기존 4탭(홈/저장/Top/마이) → 5탭(홈/저장/내 옷장/Top/마이) 또는 마이 → 내 옷장으로 통합
+- [ ] 팀 의견에 따라 결정, 핵심 탭(홈/저장)은 건드리지 않음
+
 **W3 금요일 — Fallback 판단 시점**
 - [ ] TASK.md 전체 진행 상황 확인
 - [ ] 밀리는 항목이 있으면 Fallback 발동 (CLAUDE.md 참조)
+- [ ] Lane E는 Lane A~D가 완료되지 않으면 W4로 이동
 
 ### W3 완료 기준
 - [ ] 가격 비교 테이블 동작 (Task 3.3)
 - [ ] Exact/Similar 구분 표시 (Task 3.1)
 - [ ] 외부 쇼핑몰 링크 동작 (Task 3.4)
 - [ ] 마이페이지 동작 (Task 3.5)
+- [ ] (Lane E) 사진 업로드 → 아바타 착용 데모 가능 (Phase 0 Go 시에만)
 
 ---
 

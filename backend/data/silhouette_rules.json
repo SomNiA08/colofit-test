@@ -1,0 +1,23 @@
+{
+  "_meta": {
+    "description": "실루엣 밸런스 규칙 — 15개 상하 조합. key = 'top_sil__bottom_sil', value = { score, line }",
+    "silhouettes": ["oversized", "fitted", "regular", "slim", "crop", "wide", "flared", "skinny", "high_waist"]
+  },
+  "rules": {
+    "oversized__slim": { "score": 95, "line": "Y" },
+    "oversized__skinny": { "score": 95, "line": "Y" },
+    "fitted__wide": { "score": 95, "line": "A" },
+    "fitted__flared": { "score": 95, "line": "A" },
+    "fitted__slim": { "score": 85, "line": "I" },
+    "fitted__skinny": { "score": 85, "line": "I" },
+    "regular__regular": { "score": 80, "line": "I" },
+    "regular__slim": { "score": 80, "line": "I" },
+    "regular__wide": { "score": 80, "line": "A" },
+    "oversized__wide": { "score": 60, "line": "I_volume" },
+    "oversized__flared": { "score": 55, "line": "I_volume" },
+    "crop__high_waist": { "score": 90, "line": "X" },
+    "crop__slim": { "score": 80, "line": "X" },
+    "crop__wide": { "score": 85, "line": "X" },
+    "slim__slim": { "score": 75, "line": "I" }
+  }
+}
