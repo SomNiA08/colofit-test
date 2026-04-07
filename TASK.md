@@ -335,39 +335,45 @@
 - [x] users 테이블 + style_seeds 테이블에 저장
 - [x] 프론트 → API 호출 연동 (`frontend/lib/api.ts` + step5 완료 시 호출)
 
-**Task 2.20 — 코디 카드 컴포넌트**
-- [ ] `frontend/components/OutfitCard.tsx`
-- [ ] 이미지 (3:4, rounded-lg) + 아이템 수 뱃지 + 하트 아이콘
-- [ ] 제목 (Nanum Myeongjo 16px) + 가격 (bold) + 추천 이유 1줄
-- [ ] 스코어 뱃지 미니 필 2개 ("PCF 95" "OF 80")
-- [ ] fadeInUp 등장 애니메이션
+**Task 2.20 — 코디 카드 컴포넌트** ✅ 완료 (2026-04-08)
+- [x] `frontend/components/OutfitCard.tsx`
+- [x] 이미지 (3:4, rounded-lg) + 아이템 수 뱃지 + 하트 아이콘
+- [x] 제목 (Nanum Myeongjo 16px) + 가격 (bold) + 추천 이유 1줄
+- [x] 스코어 뱃지 미니 필 2개 ("PCF 95" "OF 80") — 상위 2축 자동 선택
+- [x] fadeInUp 등장 애니메이션 (stagger 0.1s)
+- [x] next.config.ts에 네이버 쇼핑 이미지 remotePatterns 추가
+- [x] 빌드 성공 확인
 
-**Task 2.21 — 코디 피드 화면**
-- [ ] `frontend/app/feed/page.tsx`
-- [ ] 헤더 (ColorFit 로고 + 프로필 아이콘)
-- [ ] TPO 탭 필터 (가로 스크롤 필 버튼)
-- [ ] 예산 슬라이더 (접힌 상태, 탭 시 펼침)
-- [ ] "오늘의 컬러핏" 특별 카드 (피드 최상단)
-- [ ] OutfitCard 리스트 (무한 스크롤, 커서 기반 페이지네이션)
-- [ ] GET /api/feed 연동
-- [ ] 스켈레톤 로딩 + empty state + error state
+**Task 2.21 — 코디 피드 화면** ✅ 완료 (2026-04-08)
+- [x] `frontend/app/feed/page.tsx`
+- [x] 헤더 (ColorFit 로고 Nanum Myeongjo + 프로필 아이콘)
+- [x] TPO 탭 필터 (가로 스크롤 필 버튼, 전체+8종)
+- [x] 예산 슬라이더 (접힌 상태, 탭 시 펼침, MIN/MAX 슬라이더 + 적용 버튼)
+- [x] "오늘의 컬러핏" 특별 카드 (피드 최상단, 톤 이름 표시)
+- [x] OutfitCard 리스트 (IntersectionObserver 무한 스크롤, 페이지 기반)
+- [x] GET /api/feed 연동 (`frontend/lib/api.ts`에 fetchFeed 추가)
+- [x] 스켈레톤 로딩 + empty state (필터 초기화 CTA) + error state (다시 시도 CTA)
+- [x] localStorage에서 온보딩 데이터(gender, tone_id, budget, tpo) 자동 로드
 
-**Task 2.22 — save/dislike 인터랙션**
-- [ ] 좌 스와이프 → dislike (카드 슬라이드 아웃 + "관심없음" 토스트)
-- [ ] 더블탭 → save (하트 뿅 애니메이션, Marsala 전환)
-- [ ] 우상단 하트 탭 → save 토글
-- [ ] POST /api/reaction 연동 (save/dislike)
-- [ ] `backend/app/routers/reaction.py` — POST /api/reaction
+**Task 2.22 — save/dislike 인터랙션** ✅ 완료 (2026-04-08)
+- [x] 좌 스와이프 → dislike (drag="x", 임계 -80px, 카드 슬라이드 아웃 + "관심없음" 토스트)
+- [x] 더블탭 → save (300ms 더블탭 감지, 하트 뿅 scale 애니메이션 + Marsala 전환)
+- [x] 우상단 하트 탭 → save 토글
+- [x] POST /api/reaction 연동 (save 토글 + dislike, fire-and-forget)
+- [x] `backend/app/routers/reaction.py` — POST /api/reaction (save 토글/dislike 중복 방지)
+- [x] `backend/app/schemas/reaction.py` — ReactionRequest/ReactionResponse
+- [x] `frontend/lib/api.ts`에 postReaction 함수 추가
 
-**Task 2.23 — 코디 상세 화면**
-- [ ] `frontend/app/outfit/[id]/page.tsx`
-- [ ] 히어로 이미지 (풀블리드, parallax scroll)
-- [ ] 5축 스코어 바 차트 (width 0% → 실제값, ease-out 0.8s)
-- [ ] 추천 이유 카드 (배경 #F0EDE8)
-- [ ] 아이템 캐러셀 (가로 스크롤, 80px 정사각 이미지)
-- [ ] 코디 합계 가격 + 최저가 합산
-- [ ] 하단 CTA ("저장" + "A vs B 비교")
-- [ ] GET /api/outfit/{id} 연동
+**Task 2.23 — 코디 상세 화면** ✅ 완료 (2026-04-08)
+- [x] `frontend/app/outfit/[id]/page.tsx`
+- [x] 히어로 이미지 (풀블리드, 3:4, 하단 그라디언트 오버레이 + 뒤로가기 버튼)
+- [x] 5축 스코어 바 차트 (width 0%→실제값, ease-out 0.8s, stagger 0.15s, 축별 컬러)
+- [x] 추천 이유 카드 (배경 var(--surface), Nanum Myeongjo 16px, 이유 2줄 표시)
+- [x] 아이템 캐러셀 (가로 스크롤, 80px 정사각 이미지, 외부 링크 연결)
+- [x] 코디 합계 가격 + 최저가 표시
+- [x] 하단 CTA ("저장" 토글 + "A vs B 비교") — fixed bottom bar
+- [x] GET /api/outfit/{id} 연동 (`frontend/lib/api.ts`에 fetchOutfit 추가)
+- [x] 스켈레톤 로딩 + error state (돌아가기 CTA)
 
 **Task 2.24 — 하단 탭바**
 - [ ] `frontend/components/BottomTabBar.tsx`
