@@ -301,37 +301,39 @@
 - [x] 성별 선택값 localStorage 저장 (onboarding_gender)
 - [x] TypeScript 타입 오류 없음
 
-**Task 2.15 — 온보딩 Step 2: 퍼스널컬러 선택**
-- [ ] `frontend/app/onboarding/step2/page.tsx`
-- [ ] 시즌별 그라데이션 스트립 4개 (봄/여름/가을/겨울)
-- [ ] 각 스트립 아래 세부 톤 칩 3개
-- [ ] 선택 시 다른 시즌 디밍 (opacity 0.4)
-- [ ] "잘 모르겠어요" → 바텀시트 간이 진단 2문항
+**Task 2.15 — 온보딩 Step 2: 퍼스널컬러 선택** ✅ 완료 (2026-04-07)
+- [x] `frontend/app/onboarding/step2/page.tsx`
+- [x] 시즌별 그라데이션 스트립 4개 (봄/여름/가을/겨울) — 코랄→피치→아이보리 / 라벤더→스카이→민트 / 버건디→테라코타→카멜 / 블랙→로열블루→아이시핑크
+- [x] 각 스트립 아래 세부 톤 칩 3개 (32px 원형, 탭 시 Marsala 링 표시)
+- [x] 선택 시 다른 시즌 디밍 (opacity 0.4)
+- [x] "잘 모르겠어요" → 바텀시트 간이 진단 2문항 (피부 언더톤 + 자주 입는 상의 색 계열)
 
-**Task 2.16 — 온보딩 Step 3: TPO + 무드 선택**
-- [ ] `frontend/app/onboarding/step3/page.tsx`
-- [ ] TPO 8종 필 버튼 (성별에 따라 다른 세트)
-- [ ] 무드 태그 클라우드 (성별에 따라 다른 세트)
-- [ ] 복수 선택: TPO 최대 3개, 무드 최대 5개
+**Task 2.16 — 온보딩 Step 3: TPO + 무드 선택** ✅ 완료 (2026-04-07)
+- [x] `frontend/app/onboarding/step3/page.tsx`
+- [x] TPO 8종 필 버튼 (성별에 따라 다른 세트) — 여성/남성 각 8종 (출근/데이트/면접/주말/캠퍼스/여행/행사/운동)
+- [x] 무드 태그 클라우드 (성별에 따라 다른 세트) — 여성(캐주얼/미니멀/러블리/클래식/스트릿/에디토리얼) / 남성(캐주얼/미니멀/댄디/클래식/스트릿/아메카지)
+- [x] 복수 선택: TPO 최대 3개, 무드 최대 5개 (선택 개수 표시)
+- [x] 상단 퍼스널컬러 칩 미리보기 (localStorage에서 읽기)
+- [x] 선택값 localStorage 저장 (onboarding_tpo, onboarding_mood)
 
-**Task 2.17 — 온보딩 Step 4: 예산 설정**
-- [ ] `frontend/app/onboarding/step4/page.tsx`
-- [ ] 듀얼 썸 레인지 슬라이더 (min/max)
-- [ ] 빠른 프리셋 4개 버튼 (~3만 / 3~7만 / 7~15만 / 15만~)
-- [ ] "추천 코디 보러가기" CTA (풀와이드, Marsala)
+**Task 2.17 — 온보딩 Step 4: 예산 설정** ✅ 완료 (2026-04-07)
+- [x] `frontend/app/onboarding/step4/page.tsx`
+- [x] 듀얼 썸 레인지 슬라이더 (min/max)
+- [x] 빠른 프리셋 4개 버튼 (~3만 / 3~7만 / 7~15만 / 15만~)
+- [x] "추천 코디 보러가기" CTA (풀와이드, Marsala)
 
-**Task 2.18 — 온보딩 Step 5: 비주얼 취향 분석**
-- [ ] `frontend/app/onboarding/step5/page.tsx`
-- [ ] 2x2 이미지 그리드, 4라운드
-- [ ] 탭 시 선택 → 0.5s 후 다음 라운드 crossfade
-- [ ] "패스" 링크, 라운드 인디케이터
-- [ ] 완료 후 피드로 전환
+**Task 2.18 — 온보딩 Step 5: 비주얼 취향 분석** ✅ 완료 (2026-04-07)
+- [x] `frontend/app/onboarding/step5/page.tsx`
+- [x] 2x2 이미지 그리드, 4라운드
+- [x] 탭 시 선택 → 0.5s 후 다음 라운드 crossfade
+- [x] "패스" 링크, 라운드 인디케이터
+- [x] 완료 후 피드로 전환 ⚠️ 이미지 src는 picsum 플레이스홀더. 실제 패션 사진으로 교체 필요
 
-**Task 2.19 — 온보딩 API 연동**
-- [ ] `backend/app/routers/onboarding.py` — POST /api/onboarding
-- [ ] 프론트에서 5 Step 결과를 모아서 전송
-- [ ] users 테이블 + style_seeds 테이블에 저장
-- [ ] 프론트 → API 호출 연동
+**Task 2.19 — 온보딩 API 연동** ✅ 완료 (2026-04-07)
+- [x] `backend/app/routers/onboarding.py` — POST /api/onboarding
+- [x] 프론트에서 5 Step 결과를 모아서 전송
+- [x] users 테이블 + style_seeds 테이블에 저장
+- [x] 프론트 → API 호출 연동 (`frontend/lib/api.ts` + step5 완료 시 호출)
 
 **Task 2.20 — 코디 카드 컴포넌트**
 - [ ] `frontend/components/OutfitCard.tsx`
