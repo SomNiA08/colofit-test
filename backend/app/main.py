@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import feed, outfit, onboarding, reaction
+from app.routers import feed, outfit, onboarding, reaction, item, tone, top_pick, compare, saved, auth, feedback
 
 app = FastAPI(
     title=settings.app_name,
@@ -23,6 +23,13 @@ app.include_router(feed.router)
 app.include_router(outfit.router)
 app.include_router(onboarding.router)
 app.include_router(reaction.router)
+app.include_router(item.router)
+app.include_router(tone.router)
+app.include_router(top_pick.router)
+app.include_router(compare.router)
+app.include_router(saved.router)
+app.include_router(auth.router)
+app.include_router(feedback.router)
 
 
 @app.get("/health")

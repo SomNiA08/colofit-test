@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { fetchOutfit, postReaction, type OutfitItem, type ProductItem } from '@/lib/api'
+import PurchaseFeedbackSheet from '@/components/PurchaseFeedbackSheet'
 
 /* ── 스코어 축 메타 ──────────────────────────────────── */
 
@@ -119,15 +120,18 @@ function ScoreBar({
 function ItemThumbnail({
   item,
   index,
+  onExternalClick,
 }: {
   item: ProductItem
   index: number
+  onExternalClick?: () => void
 }) {
   return (
     <motion.a
       href={item.mall_url ?? '#'}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onExternalClick}
       className="flex-shrink-0 flex flex-col items-center gap-1"
       style={{ width: 80, textDecoration: 'none' }}
       initial={{ opacity: 0, y: 10 }}
@@ -225,6 +229,41 @@ export default function OutfitDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isSaved, setIsSaved] = useState(false)
+  const [feedbackVisible, setFeedbackVisible] = useState(false)
+
+  const PENDING_KEY = 'colorfit_pending_feedback'
+
+  // 외부 링크 클릭 시 sessionStorage에 기록
+  function handleExternalLinkClick() {
+    sessionStorage.setItem(
+      PENDING_KEY,
+      JSON.stringify({ outfitId, clickedAt: Date.now() }),
+    )
+  }
+
+  // 복귀 감지 → 피드백 시트 표시
+  useEffect(() => {
+    function onVisibilityChange() {
+      if (document.visibilityState !== 'visible') return
+      const raw = sessionStorage.getItem(PENDING_KEY)
+      if (!raw) return
+      try {
+        const { outfitId: pendingId, clickedAt } = JSON.parse(raw) as {
+          outfitId: string
+          clickedAt: number
+        }
+        const isRecent = Date.now() - clickedAt < 30 * 60 * 1000 // 30분 이내
+        if (pendingId === outfitId && isRecent) {
+          sessionStorage.removeItem(PENDING_KEY)
+          setFeedbackVisible(true)
+        }
+      } catch {
+        sessionStorage.removeItem(PENDING_KEY)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange)
+  }, [outfitId])
 
   useEffect(() => {
     const toneId = localStorage.getItem('onboarding_tone_id') || 'summer_cool_soft'
@@ -456,7 +495,12 @@ export default function OutfitDetailPage() {
             style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
             {outfit.items.map((item, i) => (
-              <ItemThumbnail key={item.product_id} item={item} index={i} />
+              <ItemThumbnail
+                key={item.product_id}
+                item={item}
+                index={i}
+                onExternalClick={handleExternalLinkClick}
+              />
             ))}
           </div>
         </motion.div>
@@ -464,8 +508,10 @@ export default function OutfitDetailPage() {
 
       {/* ══════════════ 하단 CTA ══════════════ */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-30 flex gap-3 px-5 py-4"
+        className="fixed bottom-0 z-30 flex gap-3 px-5 py-4"
         style={{
+          left: 'var(--app-offset)',
+          right: 'var(--app-offset)',
           background: 'var(--bg)',
           borderTop: '1px solid var(--border)',
         }}
@@ -529,6 +575,13 @@ export default function OutfitDetailPage() {
           A vs B 비교
         </motion.button>
       </div>
+
+      {/* 구매 후 피드백 바텀시트 */}
+      <PurchaseFeedbackSheet
+        outfitId={outfitId}
+        visible={feedbackVisible}
+        onClose={() => setFeedbackVisible(false)}
+      />
     </div>
   )
 }

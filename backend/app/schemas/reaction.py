@@ -27,3 +27,9 @@ class ReactionResponse(BaseModel):
     id: int
     reaction_type: str
     outfit_id: str
+
+
+class ReactionCountResponse(BaseModel):
+    """GET /api/reaction/count 응답."""
+
+    count: int

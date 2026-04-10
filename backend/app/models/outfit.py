@@ -25,4 +25,5 @@ class Outfit(Base):
     __table_args__ = (
         Index("ix_outfits_designed_tpo", "designed_tpo"),
         Index("ix_outfits_gender", "gender"),
+        Index("ix_outfits_total_price", "total_price"),
     )

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import OutfitCard from '@/components/OutfitCard'
+import BottomTabBar from '@/components/BottomTabBar'
 import { fetchFeed, postReaction, type OutfitItem } from '@/lib/api'
 
 /* ── TPO 데이터 ──────────────────────────────────────── */
@@ -746,6 +747,9 @@ export default function FeedPage() {
           </>
         )}
       </main>
+
+      {/* ══════════════ 하단 탭바 ══════════════ */}
+      <BottomTabBar />
 
       {/* ══════════════ 토스트 ══════════════ */}
       <AnimatePresence>

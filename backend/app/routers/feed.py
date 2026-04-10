@@ -144,8 +144,14 @@ async def get_feed(
     user_tpo_list = [t.strip() for t in tpo.split(",") if t.strip()] if tpo else []
     page = max(1, page)
 
-    # 1. DB에서 전체 코디 로드
-    outfit_rows = (await db.execute(select(Outfit))).scalars().all()
+    # 1. DB에서 코디 로드 — gender 프리필터 + 상한 500개 (H1은 이미 DB에서 처리)
+    outfit_rows = (
+        await db.execute(
+            select(Outfit)
+            .where(Outfit.gender == gender)
+            .limit(500)
+        )
+    ).scalars().all()
 
     # 2. 참조된 상품 일괄 로드
     all_item_ids: set[str] = set()
@@ -164,12 +170,14 @@ async def get_feed(
     outfit_dicts = [_outfit_to_dict(o, products) for o in outfit_rows]
 
     # 4. Hard Filter
+    is_all_tab = len(user_tpo_list) == 0  # "전체" 탭 여부
     filtered = apply_hard_filters(
         outfit_dicts,
         user_gender=gender,
         budget_max=float(budget_max),
         user_tpo_list=user_tpo_list,
         user_tone_id=tone_id,
+        is_all_tab=is_all_tab,
     )
 
     # 5. Soft Score

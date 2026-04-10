@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 
 // ── 타입 ─────────────────────────────────────────────────────────────────────
 
@@ -242,11 +243,13 @@ function QuickDiagnosisSheet({ onClose, onConfirm }: QuickDiagnosisSheetProps) {
 
       {/* 바텀시트 */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col"
+        className="fixed bottom-0 z-50 flex flex-col"
         style={{
+          left: 'var(--app-offset)',
+          right: 'var(--app-offset)',
           background: 'var(--bg)',
           borderRadius: '20px 20px 0 0',
-          maxHeight: '85dvh',
+          maxHeight: 'var(--sheet-max-h-85)',
           overflowY: 'auto',
           paddingBottom: 'env(safe-area-inset-bottom, 24px)',
         }}
@@ -391,6 +394,7 @@ export default function Step2Page() {
   const [expandedSeason, setExpandedSeason] = useState<SeasonKey | null>(null)
   const [selectedTone, setSelectedTone] = useState<string | null>(null)
   const [showDiagnosis, setShowDiagnosis] = useState(false)
+  useBodyScrollLock(showDiagnosis)
 
   const handleSeasonTap = (key: SeasonKey) => {
     setExpandedSeason((prev) => (prev === key ? null : key))

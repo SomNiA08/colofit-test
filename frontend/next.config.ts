@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 3600,
     remotePatterns: [
       { protocol: 'https', hostname: 'shopping-phinf.pstatic.net' },
       { protocol: 'https', hostname: '*.pstatic.net' },

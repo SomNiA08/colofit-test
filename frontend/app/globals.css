@@ -68,6 +68,21 @@
   --radius-lg:   12px;
   --radius-xl:   16px;
   --radius-full: 9999px;
+
+  /* ── 반응형 레이아웃 ── */
+  --app-max-w:   480px;
+  --app-offset:  max(0px, calc((100vw - 480px) / 2));
+
+  /* ── dvh Safari 폴백 (< 15.4) ── */
+  --sheet-max-h-80: 80vh;
+  --sheet-max-h-85: 85vh;
+}
+
+@supports (height: 1dvh) {
+  :root {
+    --sheet-max-h-80: 80dvh;
+    --sheet-max-h-85: 85dvh;
+  }
 }
 
 /* ── 다크모드 토큰 ── */

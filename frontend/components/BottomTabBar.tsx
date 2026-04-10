@@ -47,7 +47,7 @@ const TABS: Tab[] = [
   {
     id: 'my',
     label: '마이',
-    href: '/my',
+    href: '/profile',
     icon: (active) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? 'var(--accent)' : 'none'} stroke={active ? 'var(--accent)' : 'var(--text-tertiary)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -65,8 +65,10 @@ export default function BottomTabBar() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex items-end justify-around"
+      className="fixed bottom-0 z-40 flex items-end justify-around"
       style={{
+        left: 'var(--app-offset)',
+        right: 'var(--app-offset)',
         background: 'var(--bg)',
         borderTop: '1px solid var(--border)',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',

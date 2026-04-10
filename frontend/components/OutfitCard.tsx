@@ -213,7 +213,7 @@ export default function OutfitCard({
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
             style={{ borderRadius: 'var(--radius-md) var(--radius-md) 0 0' }}
-            loading="lazy"
+            loading={index < 2 ? 'eager' : 'lazy'}
             unoptimized
             draggable={false}
           />

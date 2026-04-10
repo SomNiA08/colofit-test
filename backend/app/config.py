@@ -24,6 +24,22 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
     ]
 
+    # JWT
+    jwt_secret: str = "dev-secret-change-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_days: int = 30
+
+    # Kakao OAuth
+    kakao_client_id: str = ""
+    kakao_client_secret: str = ""
+
+    # Google OAuth
+    google_client_id: str = ""
+    google_client_secret: str = ""
+
+    # Frontend URL (OAuth 콜백 리다이렉트)
+    frontend_url: str = "http://localhost:3000"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
