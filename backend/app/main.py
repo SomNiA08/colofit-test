@@ -1,7 +1,14 @@
+import logging
+import sys
+
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+logger = logging.getLogger(__name__)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+logger.info("Settings loaded successfully")
 from app.routers import feed, outfit, onboarding, reaction, item, tone, top_pick, compare, saved, auth, feedback
 
 app = FastAPI(
@@ -30,6 +37,9 @@ app.include_router(compare.router)
 app.include_router(saved.router)
 app.include_router(auth.router)
 app.include_router(feedback.router)
+
+
+logger.info("All routers registered, app ready")
 
 
 @app.get("/health")
