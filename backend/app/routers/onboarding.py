@@ -91,7 +91,7 @@ async def submit_onboarding(
     user.style_moods = body.moods or []
     user.budget_min  = body.budget_min
     user.budget_max  = body.budget_max
-await db.flush()
+    await db.flush()
     # ── 3. style_seeds 테이블 저장 (기존 행 교체) ──────────────────────────────
     existing = await db.execute(
         select(StyleSeed).where(StyleSeed.user_id == user.id)
