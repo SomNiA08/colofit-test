@@ -6,10 +6,14 @@
   2. style_seeds 테이블 — 비주얼 취향 분석 결과 저장
 """
 
+import logging
+import traceback
 import uuid
 from collections import Counter
 
 from fastapi import APIRouter, Depends, HTTPException, status
+
+logger = logging.getLogger(__name__)
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
