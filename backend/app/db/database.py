@@ -30,6 +30,7 @@ def _get_engine() -> AsyncEngine:
             pool_pre_ping=True,
             pool_size=10,
             max_overflow=20,
+            connect_args={"timeout": 10},  # DB 연결 10초 내 실패 → 502 대신 500으로 반환
         )
     return _engine
 
@@ -41,6 +42,7 @@ def _get_session_maker() -> async_sessionmaker:
             bind=_get_engine(),
             class_=AsyncSession,
             expire_on_commit=False,
+            autoflush=False,  # select() 전 자동 flush 방지 → 500 → CORS 에러 연쇄 차단
         )
     return _session_maker
 
