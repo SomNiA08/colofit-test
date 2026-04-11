@@ -30,7 +30,11 @@ def _get_engine() -> AsyncEngine:
             pool_pre_ping=True,
             pool_size=10,
             max_overflow=20,
-            connect_args={"timeout": 10},  # DB 연결 10초 내 실패 → 502 대신 500으로 반환
+            connect_args={
+                "timeout": 10,
+                "statement_cache_size": 0,           # pgBouncer 호환
+                "prepared_statement_cache_size": 0,  # pgBouncer 호환
+            },
         )
     return _engine
 
