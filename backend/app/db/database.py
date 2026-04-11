@@ -28,11 +28,12 @@ def _get_engine() -> AsyncEngine:
             db_url,
             echo=settings.debug,
             pool_pre_ping=True,
-            pool_size=10,
-            max_overflow=20,
+            pool_size=5,
+            max_overflow=10,
+            pool_recycle=300,       # 5분마다 커넥션 갱신 → 오래된 prepared stmt 충돌 방지
             connect_args={
                 "timeout": 10,
-                "statement_cache_size": 0,           # pgBouncer 호환
+                "statement_cache_size": 0,           # pgBouncer 호환: asyncpg prepared stmt 비활성화
                 "prepared_statement_cache_size": 0,  # pgBouncer 호환
             },
         )
