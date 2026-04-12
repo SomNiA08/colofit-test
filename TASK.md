@@ -613,6 +613,11 @@
 - [x] LCP 최적화 — OutfitCard 첫 2장 eager 로딩
 - [ ] Lighthouse 성능 점수 확인 (목표: 80+) — 실제 실행 필요 (배포 후 확인)
 
+**Task 5.4b — /top 페이지 생성** ✅ 완료 (2026-04-12)
+- [x] `frontend/app/top/page.tsx` 생성 — BottomTabBar의 Top 탭 클릭 시 404 해결
+- [x] fetchTopPick() 연동 (lib/api.ts 기존 함수 활용)
+- [x] loading/error/empty/success 4상태 구현, BottomTabBar 포함
+
 **Task 5.4 — 버그 수정** ✅ 완료 (2026-04-10)
 - [x] 다크모드 FOUC — layout.tsx head에 blocking 인라인 스크립트 추가
 - [x] dvh Safari 폴백 — globals.css @supports + CSS 변수(--sheet-max-h-80/85) 추가
