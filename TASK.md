@@ -492,6 +492,58 @@
 - [ ] 기존 4탭(홈/저장/Top/마이) → 5탭(홈/저장/내 옷장/Top/마이) 또는 마이 → 내 옷장으로 통합
 - [ ] 팀 의견에 따라 결정, 핵심 탭(홈/저장)은 건드리지 않음
 
+---
+
+### Lane E-Lite: 디지털 옷장 프로토타입 (프론트엔드 전용, 빠른 구현)
+
+> `digital_wardrobe_ai.html` 데모를 기반으로 Next.js에 포팅.
+> 백엔드 없이 localStorage + Claude API Route Handler로 구현.
+> 기존 Lane E (Task 3.E1~3.E5)는 보류 — 이 버전 완성 후 시간 남으면 백엔드 연동.
+> 기존 페이지(온보딩/피드/추천/마이페이지) 코드는 일절 건드리지 않음.
+> ⚠️ 구현 순서 준수: E-L1 → E-L2 → E-L3 → E-L4 (각 Task 내 파일들은 한 세션에 처리)
+
+**Task E-L1 — 타입/상수 + Claude AI Route Handler** ✅ 완료 (2026-04-15)
+- [x] `frontend/app/api/wardrobe/analyze/route.ts`
+  - 프론트에서 base64 이미지 수신 → `claude-haiku-4-5-20251001` 호출 (비용 절감)
+  - `max_tokens: 200` (JSON 응답은 100토큰 이내로 충분)
+  - 시스템 프롬프트: "ColorFit 패션 AI. 순수 JSON만 응답. 마크다운 금지."
+  - 응답 형식: `{ category, color_name, color_hex, style_tags, tone, desc }`
+  - API 키: 서버 사이드 `ANTHROPIC_API_KEY`만 사용 (브라우저 노출 금지)
+  - 타입/상수는 `frontend/lib/wardrobe.ts`에 분리 (E-L2~E-L3 컴포넌트 재사용)
+    - `WardrobeItem`, `WornState`, `Category`, `FilterCategory` 타입
+    - `TONE` (12톤 한글 이름 맵), `CATEGORY_LABEL` 상수
+
+**Task E-L2 — 아바타 + 카드 + 그리드 컴포넌트** ✅ 완료 (2026-04-15)
+- [x] `frontend/components/wardrobe/Avatar.tsx`
+  - `digital_wardrobe_ai.html` SVG 아바타를 React 컴포넌트로 1회 참조해 포팅
+  - 상의/하의/아우터 슬롯: `position: absolute` + `<img>` (Canvas 불필요)
+  - 옷 선택 시 wobble 애니메이션 (CSS keyframe, Framer Motion 미사용으로 번들 절감)
+  - 착용 중인 옷 이름 칩 하단 표시
+- [ ] `frontend/components/wardrobe/WardrobeCard.tsx`
+  - 이미지, AI 뱃지, 삭제 버튼, 색상 도트, 카테고리 뱃지, 스타일 태그, 톤명
+  - 착용 상태 강조 테두리, `fresh` 글로우 애니메이션 (CSS)
+  - AI 분석 중 스켈레톤 카드 (pulse 애니메이션)
+- [x] `frontend/components/wardrobe/WardrobeGrid.tsx`
+  - 탭 필터 (전체/상의/하의/아우터) + 빈 상태 안내
+
+**Task E-L3 — 페이지 조립 + 업로드 플로우 + 상태 영속화** ✅ 완료 (2026-04-15)
+- [x] `frontend/hooks/useWardrobeState.ts`
+  - 아이템 목록, 착용 상태, 탭 필터 관리
+  - localStorage 영속화 (`wardrobe_items` 키, 페이지 새로고침 유지)
+- [x] `frontend/app/wardrobe/page.tsx`
+  - 좌우 패널: 왼쪽 `<Avatar>` (160px, 모바일 조정) + 오른쪽 `<WardrobeGrid>`
+  - 파일 인풋: `accept="image/*"`, 모바일 `capture="environment"`
+  - 업로드 → base64 변환 → `/api/wardrobe/analyze` POST
+  - 로딩 중: 스켈레톤 카드 + 버튼 disabled
+  - 성공: AI 결과 알림 바 (색상 도트 + 분류 결과, 5초 후 자동 닫힘)
+  - 실패: 수동 카테고리 선택 폴백 버튼 표시
+  - ColorFit 디자인 토큰: Marsala 액센트, Warm Off-White 배경, Pretendard 서체
+
+**Task E-L4 — 하단 탭바 연결** ✅ 완료 (2026-04-15)
+- [x] 기존 탭바 파일에 "내 옷장" 탭 1개 추가 → `/wardrobe` 라우트 연결
+- [x] 핵심 탭(홈/저장)은 건드리지 않음 — 저장/Top 사이에 삽입
+- [x] 탭 아이콘: 옷걸이 SVG
+
 **W3 금요일 — Fallback 판단 시점**
 - [ ] TASK.md 전체 진행 상황 확인
 - [ ] 밀리는 항목이 있으면 Fallback 발동 (CLAUDE.md 참조)
